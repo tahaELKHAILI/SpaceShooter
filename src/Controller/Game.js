@@ -1,6 +1,6 @@
-import {Scout} from './Ships/Player/Scout.js';
-import {Map} from './Map/Map.js';
-import {InputHandler} from './Controller/InputHandler.js';
+import {Scout} from '../Ships/Player/Scout.js';
+import {Map} from '../Map/Map.js';
+import {InputHandler} from './InputHandler.js';
 
 
 // Canvas reading
