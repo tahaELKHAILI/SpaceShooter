@@ -1,4 +1,4 @@
-import {Player} from './Player.js';
+import {Scout} from './Ships/Player/Scout.js';
 import {Map} from './Map/Map.js';
 import {InputHandler} from './Controller/InputHandler.js';
 
@@ -13,7 +13,7 @@ let projectiles = [];
 
 // Initialise the game elements
 function start(){
-    player = new Player(50, canvas.height/2);
+    player = new Scout(50, canvas.height/2);
     gameMap = new Map(canvas.width, canvas.height);
     input = new InputHandler();
 

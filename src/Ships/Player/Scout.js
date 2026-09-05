@@ -1,7 +1,7 @@
-import {Ship} from './Ship.js';
-import { LazerBlast } from './Projectiles/LazerBlast.js';
+import {Ship} from '../Ship.js';
+import { LazerBlast } from '../../Projectiles/LazerBlast.js';
 
-export class Player extends Ship {
+export class Scout extends Ship {
     constructor(x,y){
         super(x, y, 50, 25, 5, 250, '#F54927', 100)
     }

@@ -1,6 +1,6 @@
-import {Ship} from './Ship.js';
+import {Ship} from '../Ship.js';
 
-export class Enemy extends Ship {
+export class Pulse extends Ship {
     constructor(x, y){
         super(x, y, 50, 25, (Math.random()*3+5), '#27f55e', 100);
         this.markForDeletion = false;
