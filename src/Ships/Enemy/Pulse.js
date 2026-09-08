@@ -1,8 +1,9 @@
 import {Ship} from '../Ship.js';
+import { LazerBlast } from '../../Projectiles/LazerBlast.js';
 
 export class Pulse extends Ship {
     constructor(x, y){
-        super(x, y, 50, 25, (Math.random()*3+5), '#27f55e', 100);
+        super(x, y, 50, 25, 5, 250,'#27f55e', 100);
         this.markForDeletion = false;
     }
 
@@ -28,5 +29,12 @@ export class Pulse extends Ship {
     }
 
     //Todo: Automatique shooting
-    shoot(){}
+    shoot(currentTime){
+        if(currentTime <this.nextShotTime){
+            return null;
+        }
+
+        this.nextShotTime = currentTime+this.fireRate;
+        return new LazerBlast(this.x, this.y, "yellow", -1);
+    }
 }

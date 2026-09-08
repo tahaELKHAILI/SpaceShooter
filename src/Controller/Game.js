@@ -1,4 +1,5 @@
 import {Scout} from '../Ships/Player/Scout.js';
+import {loadPulse} from '../Ships/Enemy/EnemyLoader.js';
 import {Map} from '../Map/Map.js';
 import {InputHandler} from './InputHandler.js';
 
@@ -8,6 +9,9 @@ var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 
 let gameMap, player, input;
+let enemies = [];
+let enemyLoadInterval = 2000;
+let nextEnemyLoadtime = enemyLoadInterval;
 let lastTime = 0;
 let projectiles = [];
 
@@ -23,13 +27,24 @@ function start(){
 // Update game object state
 function update(deltaTime, currentTime){
     player.move(canvas.width,canvas.height, input,deltaTime);
+
+    if(currentTime >= nextEnemyLoadtime){
+        enemies.push(loadPulse(canvas.width, canvas.height));
+        nextEnemyLoadtime +=enemyLoadInterval;
+    }
+
     gameMap.moveStars(deltaTime);
+
+    enemies.forEach((enemy)=>{
+        enemy.move(deltaTime);
+    });
 
     projectiles.push(player.shoot(input, currentTime));
     projectiles.forEach((projectile)=>{
         if(projectile != null)
             projectile.move(deltaTime);
     });
+
 }
 
 function end(){}
@@ -52,10 +67,16 @@ function render(){
     ctx.clearRect(0,0,canvas.width, canvas.height);
     player.draw(ctx);
     gameMap.draw(ctx);
-        projectiles.forEach((projectile)=>{
+    
+    enemies.forEach((enemy)=>{
+        enemy.draw(ctx)
+    });
+
+    projectiles.forEach((projectile)=>{
         if(projectile != null)
             projectile.draw(ctx)
     });
+
 }
 
 //Game launch
