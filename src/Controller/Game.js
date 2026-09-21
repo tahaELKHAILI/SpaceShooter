@@ -14,12 +14,14 @@ let enemyLoadInterval = 2000;
 let nextEnemyLoadtime = enemyLoadInterval;
 let lastTime = 0;
 let playerProjectiles = [];
+let score = 0;
+const gameState = {isPaused : false};
 
 // Initialise the game elements
 function start(){
     player = new Scout(50, canvas.height/2);
     gameMap = new Map(canvas.width, canvas.height);
-    input = new InputHandler();
+    input = new InputHandler(gameState);
 
     requestAnimationFrame(gameLoop);
 }
@@ -57,6 +59,11 @@ function update(deltaTime, currentTime){
 
     enemies = enemies.filter(enemy => !enemy.markForDeletion);
     playerProjectiles = playerProjectiles.filter(projectile => !projectile.markForDeletion);
+
+    //Score board
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "red";
+    ctx.fillText("Score: "+ score, 10,25);
 }
 
 function end(){}
@@ -69,10 +76,23 @@ function gameLoop(currentTime){
     lastTime = currentTime;
     const normalizedDelta = deltaTime / 16.67;
 
-    update(normalizedDelta, currentTime);
+    if(!gameState.isPaused){
+        update(normalizedDelta, currentTime);
+    }
     render();
 
+    if (gameState.isPaused) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.4)"; // Subtle dim effect
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = "white";
+        ctx.font = "bold 30px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
+    }
+    
     requestAnimationFrame(gameLoop);
+
 }
 
 function render(){
@@ -88,24 +108,30 @@ function render(){
         projectile.draw(ctx)
     });
 
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "red";
+    ctx.fillText("Score: "+score, 10, 25);
+
 }
 
 function isHit(object1, object2){
     return (
-        object1.x < object2.x + object2.width &&  
-        object1.x + object1.width > object2.x &&  
-        object1.y < object2.y + object2.height && 
-        object1.y + object1.height > object2.y 
+        object1.x - object1.width < object2.x + object2.width &&  
+        object1.x > object2.x &&  
+        object1.y - (object1.height / 2) < object2.y + (object2.height / 2) && 
+        object1.y + (object1.height / 2) > object2.y - (object2.height / 2)
     );
 }
 
+
 function checkCollision(){
-    //Player
+    //Enemy taking damage
     playerProjectiles.forEach(projectile =>{
         enemies.forEach(enemy =>{
             if (isHit(projectile, enemy)){
                 enemy.markForDeletion = true;
                 projectile.markForDeletion = true;
+                score += 1;
             }
         });
 

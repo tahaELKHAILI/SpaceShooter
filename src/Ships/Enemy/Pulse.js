@@ -6,7 +6,6 @@ export class Pulse extends Ship {
         super(x, y, 50, 25, 5, 250,'#27f55e', 100);
         this.markForDeletion = false;
     }
-
     draw(ctx){
         ctx.beginPath();
         ctx.moveTo(this.x, this.y); 

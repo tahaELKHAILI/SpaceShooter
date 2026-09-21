@@ -1,5 +1,5 @@
 export class InputHandler{
-    constructor(){
+    constructor(gameState){
 
         this.keys = new Set();
 
@@ -7,6 +7,13 @@ export class InputHandler{
             if ([" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
                 event.preventDefault()
             }
+
+            if(event.key === "p"){
+                if(gameState){
+                    gameState.isPaused = !gameState.isPaused;
+                }
+            }
+
             this.keys.add(event.key)
         });
 

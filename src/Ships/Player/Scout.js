@@ -6,7 +6,7 @@ export class Scout extends Ship {
         super(x, y, 50, 25, 5, 250, '#F54927', 100)
     }
 
-    
+
     draw(ctx){
         ctx.beginPath();
         ctx.moveTo(this.x, this.y); 
@@ -18,7 +18,7 @@ export class Scout extends Ship {
         ctx.fill(); 
         ctx.stroke();
     }
-    
+
     move(Width, Height, input,deltaTime){
     //todo: Implement the collision
         //Vertical move
