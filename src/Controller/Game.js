@@ -11,6 +11,7 @@ var ctx = canvas.getContext("2d");
 let gameMap, player, input;
 let enemies = [];
 let enemyLoadInterval = 2000;
+let gameTime = 0;
 let nextEnemyLoadtime = enemyLoadInterval;
 let lastTime = 0;
 let playerProjectiles = [];
@@ -35,7 +36,9 @@ function update(deltaTime, currentTime){
     enemies = enemies.filter(enemy => !enemy.markForDeletion);
     playerProjectiles = playerProjectiles.filter(projectile => !projectile.markForDeletion);
 
-    if(currentTime >= nextEnemyLoadtime){
+    gameTime += deltaTime * 16.67;
+
+    if(gameTime >= nextEnemyLoadtime){
         enemies.push(loadPulse(canvas.width, canvas.height));
         nextEnemyLoadtime +=enemyLoadInterval;
     }
@@ -138,6 +141,9 @@ function render(){
 
     //player healthbar
     ctx.fillText("Health: "+player.health, 10,canvas.height);
+
+    //Game time
+    ctx.fillText("Time: "+(gameTime/1000).toFixed(2), canvas.width/2, 25)
 }
 
 function isHit(object1, object2){
