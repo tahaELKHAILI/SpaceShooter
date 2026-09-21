@@ -108,6 +108,10 @@ function checkCollision(){
                 projectile.markForDeletion = true;
             }
         });
+
+        if(projectile.x > canvas.width){
+            projectile.markForDeletion = true;
+        }
     });
 }
 
