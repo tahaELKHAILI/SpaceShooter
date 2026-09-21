@@ -9,4 +9,5 @@ export class LazerBlast extends Projectile{
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
+
 }

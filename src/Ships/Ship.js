@@ -14,10 +14,10 @@ export class Ship{
     }
 
     takeDamage(damage){
-        this.health -=damage;
+        this.health -=damage;/*
         if(health <0){
             this.health = 0;
-        }
+        }*/
     }
 
     // Abstract function to handle the drawing of the character

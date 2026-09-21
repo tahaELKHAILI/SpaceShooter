@@ -21,6 +21,11 @@ export class Projectile{
         }else if (this.direction <0){
             this.x -= this.speed*deltaTime;
         }
+
+        this.boundingBox = {
+            left: this.direction > 0 ? this.x - this.width : this.x,
+            top: this.y
+        };
     }
 
 }

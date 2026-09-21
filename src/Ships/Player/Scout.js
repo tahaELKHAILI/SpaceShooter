@@ -35,6 +35,11 @@ export class Scout extends Ship {
         } else if (input.isPressed("ArrowRight","d","D") && (this.x < Width)){
             this.x += this.speed*deltaTime;
         }
+
+            this.boundingBox = {
+                left: this.x - this.width,
+                top: this.y - this.height / 2
+            };
     }
 
     //todo: shooting on enemy
@@ -46,4 +51,5 @@ export class Scout extends Ship {
         this.nextShotTime = currentTime+this.fireRate;
         return new LazerBlast(this.x, this.y, "green", 1);
     }
+
 }

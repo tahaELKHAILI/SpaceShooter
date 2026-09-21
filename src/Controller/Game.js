@@ -15,7 +15,9 @@ let nextEnemyLoadtime = enemyLoadInterval;
 let lastTime = 0;
 let playerProjectiles = [];
 let score = 0;
-const gameState = {isPaused : false};
+const gameState = {isPaused : false,
+    isGameOver : false
+};
 
 // Initialise the game elements
 function start(){
@@ -29,6 +31,9 @@ function start(){
 // Update game object state
 function update(deltaTime, currentTime){
     player.move(canvas.width,canvas.height, input,deltaTime);
+
+    enemies = enemies.filter(enemy => !enemy.markForDeletion);
+    playerProjectiles = playerProjectiles.filter(projectile => !projectile.markForDeletion);
 
     if(currentTime >= nextEnemyLoadtime){
         enemies.push(loadPulse(canvas.width, canvas.height));
@@ -49,21 +54,15 @@ function update(deltaTime, currentTime){
         }
     }
 
+
     if(playerProjectiles.length != 0){
         playerProjectiles.forEach((projectile)=>{
             projectile.move(deltaTime);
         });
-
-        checkCollision()
     }
 
-    enemies = enemies.filter(enemy => !enemy.markForDeletion);
-    playerProjectiles = playerProjectiles.filter(projectile => !projectile.markForDeletion);
+    checkCollision()
 
-    //Score board
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "red";
-    ctx.fillText("Score: "+ score, 10,25);
 }
 
 function end(){}
@@ -76,7 +75,7 @@ function gameLoop(currentTime){
     lastTime = currentTime;
     const normalizedDelta = deltaTime / 16.67;
 
-    if(!gameState.isPaused){
+    if(!gameState.isPaused && !gameState.isGameOver){
         update(normalizedDelta, currentTime);
     }
     render();
@@ -90,13 +89,37 @@ function gameLoop(currentTime){
         ctx.textAlign = "center";
         ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
     }
+
+     
+if (player.health <= 0) {
+        gameState.isGameOver = true;
+
+        // Darken screen background
+        ctx.fillStyle = "rgba(0, 0, 0, 0.7)"; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Game Over Text
+        ctx.fillStyle = "red";
+        ctx.font = "bold 50px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+
+        // Final Score display
+        ctx.fillStyle = "white";
+        ctx.font = "24px Arial";
+        ctx.fillText("Final Score: " + score, canvas.width / 2, canvas.height / 2 + 30);
+        ctx.font = "18px Arial";
+        ctx.fillText("Press F5 to Restart", canvas.width / 2, canvas.height / 2 + 70);
+    }
     
+    // Keep the animation loop running smoothly
     requestAnimationFrame(gameLoop);
 
 }
 
 function render(){
     ctx.clearRect(0,0,canvas.width, canvas.height);
+    ctx.textAlign = "left"; 
     player.draw(ctx);
     gameMap.draw(ctx);
     
@@ -108,24 +131,35 @@ function render(){
         projectile.draw(ctx)
     });
 
+    //score board
     ctx.font = "30px Arial";
     ctx.fillStyle = "red";
     ctx.fillText("Score: "+score, 10, 25);
 
+    //player healthbar
+    ctx.fillText("Health: "+player.health, 10,canvas.height);
 }
 
 function isHit(object1, object2){
     return (
-        object1.x - object1.width < object2.x + object2.width &&  
-        object1.x > object2.x &&  
-        object1.y - (object1.height / 2) < object2.y + (object2.height / 2) && 
-        object1.y + (object1.height / 2) > object2.y - (object2.height / 2)
+        object1.boundingBox.left < object2.boundingBox.left + object2.width &&   
+        object1.boundingBox.left + object1.width > object2.boundingBox.left &&   
+        object1.boundingBox.top < object2.boundingBox.top + object2.height &&  
+        object1.boundingBox.top + object1.height > object2.boundingBox.top     
     );
 }
 
 
 function checkCollision(){
     //Enemy taking damage
+    enemies.forEach(enemy => {
+        if(isHit(player, enemy)){
+            enemy.markForDeletion = true;
+            player.takeDamage(10)
+        }
+    });
+
+        
     playerProjectiles.forEach(projectile =>{
         enemies.forEach(enemy =>{
             if (isHit(projectile, enemy)){
@@ -139,6 +173,7 @@ function checkCollision(){
             projectile.markForDeletion = true;
         }
     });
+
 }
 
 //Game launch

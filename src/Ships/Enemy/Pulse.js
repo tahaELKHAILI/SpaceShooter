@@ -25,6 +25,11 @@ export class Pulse extends Ship {
         if(this.x <= 0){
             this.markForDeletion = true
         }
+        
+        this.boundingBox = {
+            left: this.x,
+            top: this.y - this.height / 2
+        };
     }
 
     //Todo: Automatique shooting
@@ -36,4 +41,5 @@ export class Pulse extends Ship {
         this.nextShotTime = currentTime+this.fireRate;
         return new LazerBlast(this.x, this.y, "yellow", -1);
     }
+
 }
