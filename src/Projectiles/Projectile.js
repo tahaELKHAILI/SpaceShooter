@@ -9,6 +9,7 @@ export class Projectile{
         this.damage = damage;
         this.color = color;
         this.direction = direction;
+        this.markForDeletion = false;
     }
 
     //Abstract function to draw the projectile

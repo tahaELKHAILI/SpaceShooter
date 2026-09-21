@@ -13,7 +13,7 @@ let enemies = [];
 let enemyLoadInterval = 2000;
 let nextEnemyLoadtime = enemyLoadInterval;
 let lastTime = 0;
-let projectiles = [];
+let playerProjectiles = [];
 
 // Initialise the game elements
 function start(){
@@ -39,12 +39,24 @@ function update(deltaTime, currentTime){
         enemy.move(deltaTime);
     });
 
-    projectiles.push(player.shoot(input, currentTime));
-    projectiles.forEach((projectile)=>{
-        if(projectile != null)
-            projectile.move(deltaTime);
-    });
 
+    if(input.isPressed(" ")){
+        let playerShot = player.shoot(currentTime);
+        if(playerShot){
+            playerProjectiles.push(playerShot);
+        }
+    }
+
+    if(playerProjectiles.length != 0){
+        playerProjectiles.forEach((projectile)=>{
+            projectile.move(deltaTime);
+        });
+
+        checkCollision()
+    }
+
+    enemies = enemies.filter(enemy => !enemy.markForDeletion);
+    playerProjectiles = playerProjectiles.filter(projectile => !projectile.markForDeletion);
 }
 
 function end(){}
@@ -72,11 +84,31 @@ function render(){
         enemy.draw(ctx)
     });
 
-    projectiles.forEach((projectile)=>{
-        if(projectile != null)
-            projectile.draw(ctx)
+    playerProjectiles.forEach((projectile)=>{
+        projectile.draw(ctx)
     });
 
+}
+
+function isHit(object1, object2){
+    return (
+        object1.x < object2.x + object2.width &&  
+        object1.x + object1.width > object2.x &&  
+        object1.y < object2.y + object2.height && 
+        object1.y + object1.height > object2.y 
+    );
+}
+
+function checkCollision(){
+    //Player
+    playerProjectiles.forEach(projectile =>{
+        enemies.forEach(enemy =>{
+            if (isHit(projectile, enemy)){
+                enemy.markForDeletion = true;
+                projectile.markForDeletion = true;
+            }
+        });
+    });
 }
 
 //Game launch

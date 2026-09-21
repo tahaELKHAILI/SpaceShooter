@@ -7,7 +7,6 @@ export class InputHandler{
             if ([" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
                 event.preventDefault()
             }
-            console.log(event.key);
             this.keys.add(event.key)
         });
 

@@ -24,35 +24,26 @@ export class Scout extends Ship {
         //Vertical move
         if(input.isPressed("ArrowUp","w","W") && (this.y >this.height/2)){
             this.y -= this.speed*deltaTime;
-            //debug
-            console.log(this.y)
         } else if (input.isPressed("ArrowDown","s", "S")&& (this.y <Height-(this.height/2))){
             this.y += this.speed*deltaTime;
-            //debug
-            console.log(this.y)
+
         }
 
         //Horizontal move
         if(input.isPressed("ArrowLeft","a","A") && (this.x > this.width)){
             this.x -= this.speed*deltaTime;
-            //debug
-            console.log(this.x)
         } else if (input.isPressed("ArrowRight","d","D") && (this.x < Width)){
             this.x += this.speed*deltaTime;
-            //debug
-            console.log(this.x)
         }
     }
 
     //todo: shooting on enemy
-    shoot(input, currentTime){
+    shoot(currentTime){
         if(currentTime <this.nextShotTime){
             return null;
         }
 
-        if(input.isPressed(" ")){
-            this.nextShotTime = currentTime+this.fireRate;
-            return new LazerBlast(this.x, this.y, "green", 1);
-        }
+        this.nextShotTime = currentTime+this.fireRate;
+        return new LazerBlast(this.x, this.y, "green", 1);
     }
 }
